@@ -8,6 +8,7 @@ import { ToastContainer } from 'react-toastify'
 import { queryClient } from '../lib/config/reactquery.js'
 
 // Styling
+import '../styles/globals.css'
 import 'react-toastify/dist/ReactToastify.css'
 
 function MyApp({ Component, pageProps }) {
