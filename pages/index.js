@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Layout from '../components/shared/Layout.js'
+import React from 'react'
 
 export default function Home() {
   return (
@@ -7,10 +8,12 @@ export default function Home() {
       <Head>
         <title>Digital Concierge Desk Dashboard</title>
         <meta name="description" content="Digital Concierge Desk Dashboard" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="../public/favicon.ico" />
       </Head>
 
-      <main>Dashboard</main>
+      <main>
+        <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+      </main>
     </div>
   )
 }
