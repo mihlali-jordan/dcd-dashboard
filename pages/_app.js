@@ -11,6 +11,7 @@ import { queryClient } from '../lib/config/reactquery.js'
 // Styling
 import '../styles/globals.css'
 import 'react-toastify/dist/ReactToastify.css'
+import theme from '../lib/config/theme.js'
 
 function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout || (page => page)
@@ -18,7 +19,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <QueryClientProvider client={queryClient}>
       {getLayout(
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
           <ToastContainer
             position="top-right"
             autoClose={3000}
