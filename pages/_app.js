@@ -2,6 +2,7 @@
 import React from 'react'
 import { QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import { ChakraProvider } from '@chakra-ui/react'
 import { ToastContainer } from 'react-toastify'
 
 // Local imports
@@ -17,7 +18,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <QueryClientProvider client={queryClient}>
       {getLayout(
-        <React.Fragment>
+        <ChakraProvider>
           <ToastContainer
             position="top-right"
             autoClose={3000}
@@ -30,7 +31,7 @@ function MyApp({ Component, pageProps }) {
             theme="colored"
           />
           <Component {...pageProps} />
-        </React.Fragment>
+        </ChakraProvider>
       )}
       <ReactQueryDevtools />
     </QueryClientProvider>
