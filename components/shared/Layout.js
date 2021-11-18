@@ -48,7 +48,7 @@ export default function Layout({ children }) {
         <body class="h-full">
         ```
       */}
-      <div>
+      <div style={{ fontFamily: 'Antartida' }}>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"

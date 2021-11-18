@@ -2,3 +2,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Antartida font*/
+@layer base {
+    @font-face {
+        font-family: Antartida;
+        src: url("../lib/assets/fonts/latinotype_-_antartidarounded-light-webfont.woff2") format("woff2"),
+        url("../lib/assets/fonts/latinotype_-_antartidarounded-light-webfont.woff") format("woff");
+        font-weight: 300;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: Antartida;
+        src: url("../lib/assets/fonts/latinotype_-_antartidarounded-medium-webfont.woff2") format("woff2"),
+        url("../lib/assets/fonts/latinotype_-_antartidarounded-medium-webfont.woff") format("woff");
+        font-weight: 500;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: Antartida;
+        src: url("../lib/assets/fonts/latinotype_-_antartidarounded-bold-webfont.woff2") format("woff2"),
+        url("../lib/assets/fonts/latinotype_-_antartidarounded-bold-webfont.woff") format("woff");
+        font-weight: 700;
+        font-style: normal;
+    }
+}
+
+body {
+    font-family: "Antartida", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+    background-color: #f3f4f6;
+}
