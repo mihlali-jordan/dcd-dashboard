@@ -3,14 +3,19 @@ import {
   FormControl,
   FormLabel,
   FormErrorMessage,
-  FormHelperText,
   Input,
 } from '@chakra-ui/react'
 import { useController } from 'react-hook-form'
 
-export default function FormInput({ name, errors, control, ...otherProps }) {
+export default function FormInput({
+  name,
+  errors,
+  control,
+  label,
+  ...otherProps
+}) {
   const {
-    field: { onChange, onBlur, value, ref },
+    field: { onChange, onBlur, value },
     fieldState: { invalid },
   } = useController({
     name,
@@ -18,8 +23,8 @@ export default function FormInput({ name, errors, control, ...otherProps }) {
     defaultValue: '',
   })
   return (
-    <FormControl id={name}>
-      <FormLabel>Email address</FormLabel>
+    <FormControl id={name} isInvalid={invalid}>
+      {label ? <FormLabel>{label}</FormLabel> : null}
       <Input
         _focus={{ borderColor: 'brand.tertiary.500' }}
         isInvalid={invalid}
@@ -32,20 +37,9 @@ export default function FormInput({ name, errors, control, ...otherProps }) {
         variant="filled"
         {...otherProps}
       />
-      {/*<FormHelperText>We'll never share your email.</FormHelperText>*/}
+      {invalid ? (
+        <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
+      ) : null}
     </FormControl>
-    // <TextField
-    //   margin="normal"
-    //   error={invalid}
-    //   autoFocus
-    //   onChange={onChange}
-    //   onBlur={onBlur}
-    //   value={value}
-    //   name={name}
-    //   inputRef={ref}
-    //   id={name}
-    //   helperText={errors[name]?.message}
-    //   {...otherProps}
-    // />
   )
 }

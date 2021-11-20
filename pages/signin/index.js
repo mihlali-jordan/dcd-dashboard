@@ -51,12 +51,20 @@ export default function SignIn() {
         onSubmit={handleSubmit(handleSignIn)}
         className="sm:mx-auto sm:w-full sm:max-w-md space-y-3"
       >
-        <FormInput name="email" control={control} errors={errors} />
+        <FormInput
+          name="email"
+          placeholder="Enter your email"
+          control={control}
+          errors={errors}
+          autoComplete="username"
+        />
         <FormInput
           name="password"
+          placeholder="Enter your password"
           control={control}
           errors={errors}
           type="password"
+          autoComplete="current-password"
         />
         <Button
           type="submit"
