@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router.js'
+import { Router } from 'next/router.js'
 
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
@@ -17,6 +18,7 @@ import {
 } from '@heroicons/react/outline'
 
 import logo from '../../public/hollard-logo-purple.png'
+import axios from 'axios'
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
@@ -29,13 +31,18 @@ const navigation = [
   },
 ]
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
+  // { name: 'Your Profile', href: '#' },
+  // { name: 'Settings', href: '#' },
+  { name: 'Sign out', href: '#', action: handleSignOut },
 ]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
+}
+
+async function handleSignOut(router) {
+  await axios.post('/api/logout')
+  router.push('/signin')
 }
 
 export default function Layout({ children }) {
@@ -273,15 +280,15 @@ export default function Layout({ children }) {
                       {userNavigation.map(item => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
-                            <a
-                              href={item.href}
+                            <span
+                              onClick={() => item.action(router)}
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
                               )}
                             >
                               {item.name}
-                            </a>
+                            </span>
                           )}
                         </Menu.Item>
                       ))}

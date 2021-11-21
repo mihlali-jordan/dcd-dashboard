@@ -1,5 +1,6 @@
 // Libraries
 import axios from 'axios'
+import { useRouter } from 'next/router.js'
 // Components
 import Image from 'next/image'
 import { Button } from '@chakra-ui/react'
@@ -34,12 +35,14 @@ export default function SignIn() {
     },
   })
 
-  const handleSignIn = values => {
-    axios.post('/api/login', {
+  const router = useRouter()
+
+  const handleSignIn = async values => {
+    await axios.post('/api/login', {
       email: values.email,
       password: values.password,
     })
-    console.log(values)
+    router.push('/')
   }
 
   return (
@@ -83,4 +86,12 @@ export default function SignIn() {
       </form>
     </div>
   )
+}
+
+export async function getServerSideProps({ req }) {
+  if (req.cookies.authToken) {
+    return { props: {}, redirect: { destination: '/', permanent: false } }
+  } else {
+    return { props: {} }
+  }
 }

@@ -50,7 +50,7 @@ const withProtect = handler => {
 
       return handler(req, res)
     } catch (err) {
-      // Handle expired token
+      //TODO: Handle expired token
       if (err.name === 'JsonWebTokenExpired') {
         const { data } = await axios.post(
           '/token',
@@ -65,7 +65,7 @@ const withProtect = handler => {
           }
         )
 
-        // set refresh token and token
+        //TODO: set refresh token and token
       }
 
       return res.status(401).json({
