@@ -1,3 +1,5 @@
+// Libraries
+import axios from 'axios'
 // Components
 import Image from 'next/image'
 import { Button } from '@chakra-ui/react'
@@ -33,6 +35,10 @@ export default function SignIn() {
   })
 
   const handleSignIn = values => {
+    axios.post('/api/login', {
+      email: values.email,
+      password: values.password,
+    })
     console.log(values)
   }
 
