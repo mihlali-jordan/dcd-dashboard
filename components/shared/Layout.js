@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router.js'
-import { Router } from 'next/router.js'
+import { Spinner } from '@chakra-ui/react'
 
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
@@ -17,8 +17,11 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/outline'
 
+import { useCustomToast } from '../../lib/hooks/useCustomToast.js'
+
 import logo from '../../public/hollard-logo-purple.png'
 import axios from 'axios'
+import { set } from 'react-hook-form'
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
@@ -33,7 +36,11 @@ const navigation = [
 const userNavigation = [
   // { name: 'Your Profile', href: '#' },
   // { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#', action: handleSignOut },
+  {
+    name: 'Sign out',
+    href: '#',
+    action: handleSignOut,
+  },
 ]
 
 function classNames(...classes) {
@@ -42,7 +49,7 @@ function classNames(...classes) {
 
 async function handleSignOut(router) {
   await axios.post('/api/logout')
-  router.push('/signin')
+  router.reload()
 }
 
 export default function Layout({ children }) {
@@ -51,14 +58,6 @@ export default function Layout({ children }) {
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
       <div style={{ fontFamily: 'Antartida' }}>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog

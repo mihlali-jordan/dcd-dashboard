@@ -1,4 +1,5 @@
 // Libraries
+import React from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router.js'
 // Components
@@ -34,15 +35,18 @@ export default function SignIn() {
       password: 'abc123abc',
     },
   })
+  const [isLoggingIn, setIsLoggingIn] = React.useState(false)
 
   const router = useRouter()
 
   const handleSignIn = async values => {
+    setIsLoggingIn(true)
     await axios.post('/api/login', {
       email: values.email,
       password: values.password,
     })
     router.push('/')
+    setIsLoggingIn(false)
   }
 
   return (
@@ -80,6 +84,7 @@ export default function SignIn() {
           isFullWidth
           colorScheme="brand.secondary"
           variant="solid"
+          isLoading={isLoggingIn}
         >
           Sign In
         </Button>
