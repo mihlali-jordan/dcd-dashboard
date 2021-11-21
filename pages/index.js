@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Layout from '../components/shared/Layout.js'
 import React from 'react'
+import { isAuthenticated } from '../lib/utils'
 
 export default function Home() {
   return (
@@ -20,4 +21,8 @@ export default function Home() {
 
 Home.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>
+}
+
+export async function getServerSideProps({ req }) {
+  return isAuthenticated(req.cookies.authToken)
 }

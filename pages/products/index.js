@@ -1,5 +1,6 @@
 import Layout from '../../components/shared/Layout.js'
 import React from 'react'
+import { isAuthenticated } from '../../lib/utils'
 
 export default function Products() {
   return (
@@ -11,4 +12,8 @@ export default function Products() {
 
 Products.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>
+}
+
+export async function getServerSideProps({ req }) {
+  return isAuthenticated(req.cookies.authToken)
 }
