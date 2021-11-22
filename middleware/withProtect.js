@@ -46,7 +46,12 @@ const withProtect = handler => {
         })
       }
 
-      req.user = vendor
+      req.user = vendor.user
+      req.userId = vendor.user.id
+
+      req.headers['Authorization'] = `Bearer ${token}`
+      req.headers['apikey'] = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      req.headers['Content-Type'] = 'application/json'
 
       return handler(req, res)
     } catch (err) {
