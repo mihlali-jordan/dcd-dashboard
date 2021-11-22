@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Cookies from 'cookies'
+import { setAuthCookies } from '../../lib/utils'
 
 export default async function handler(req, res) {
   console.log(req.body)
@@ -17,17 +17,7 @@ export default async function handler(req, res) {
       }
     )
 
-    const cookies = new Cookies(req, res)
-    cookies.set('authToken', data.access_token, {
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      secure: process.env.NODE_ENV === 'production',
-    })
-    cookies.set('refreshToken', data.refresh_token, {
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      secure: process.env.NODE_ENV === 'production',
-    })
+    setAuthCookies(req, res, data)
 
     res.status(200).json({ message: 'Successfully authenticated' })
   } catch (err) {

@@ -1,20 +1,7 @@
 import jwt from 'jsonwebtoken'
-import axios from 'axios'
 
-const getUser = async (id, url) => {
-  const { data } = await axios.get(url, {
-    headers: {
-      apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    },
-    baseURL: process.env.NEXT_PUBLIC_SUPABASE_API_ENDPOINT,
-    params: {
-      id: `eq.${id}`,
-      select: '*',
-    },
-  })
-
-  return { user: data[0] }
-}
+// Utility functions
+import { refreshAuthToken, setHTTPHeaders } from '../lib/utils'
 
 const withProtect = handler => {
   return async (req, res) => {
@@ -36,48 +23,26 @@ const withProtect = handler => {
 
     try {
       const decoded = jwt.verify(token, secret)
-
-      const vendor = await getUser(decoded.sub, '/Vendors')
-
-      if (!vendor) {
-        return res.status(401).json({
-          success: false,
-          message: 'The user belonging to this token does not exist',
-        })
-      }
-
-      req.user = vendor.user
-      req.userId = vendor.user.id
-
-      req.headers['Authorization'] = `Bearer ${token}`
-      req.headers['apikey'] = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-      req.headers['Content-Type'] = 'application/json'
+      setHTTPHeaders(req, token, decoded)
 
       return handler(req, res)
     } catch (err) {
-      //TODO: Handle expired token
-      if (err.name === 'JsonWebTokenExpired') {
-        const { data } = await axios.post(
-          '/token',
-          {
-            refresh_token: refreshToken,
-          },
-          {
-            params: {
-              grant_type: 'refresh_token',
-            },
-            baseURL: process.env.NEXT_PUBLIC_SUPABASE_API_AUTH_ENDPOINT,
-          }
-        )
+      if (err.name === 'TokenExpiredError') {
+        const data = await refreshAuthToken(req, res, refreshToken)
+        const decodedToken = jwt.decode(data.access_token)
+        setHTTPHeaders(req, data.access_token, decodedToken)
 
-        //TODO: set refresh token and token
+        return handler(req, res)
+      } else if (err.name === 'JsonWebTokenError') {
+        return res.status(401).json({
+          success: false,
+          message: 'Invalid auth token',
+        })
       }
-
       return res.status(401).json({
         success: false,
         message: 'Please log in to get access',
       })
-      // Get user profile from db
     }
   }
 }

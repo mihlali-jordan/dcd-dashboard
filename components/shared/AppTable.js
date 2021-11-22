@@ -50,7 +50,7 @@ export default function AppTable({ columns, data }) {
     {
       columns,
       data,
-      initialState: { pageIndex: 1 },
+      initialState: { pageIndex: 0 },
     },
     usePagination
   )

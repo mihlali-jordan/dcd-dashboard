@@ -12,14 +12,11 @@ import { isAuthenticated } from '../../lib/utils'
 async function getProducts() {
   const { data } = await axios.get('/api/products/fetch')
 
-  return data
+  return data.data
 }
 
 export default function Products() {
-  const {
-    data: { data: products },
-    isLoading,
-  } = useQuery('products', getProducts)
+  const { data, isLoading } = useQuery('products', getProducts)
 
   const columns = React.useMemo(
     () => [
@@ -47,7 +44,13 @@ export default function Products() {
     []
   )
 
-  const tableData = React.useMemo(() => [...products], [products])
+  const tableData = React.useMemo(() => {
+    if (!data) {
+      return []
+    }
+
+    return [...data]
+  }, [data])
 
   return (
     <div>
@@ -58,6 +61,12 @@ export default function Products() {
       <div className="my-6">
         {isLoading ? (
           <Stack>
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
             <Skeleton height="20px" />
             <Skeleton height="20px" />
             <Skeleton height="20px" />
