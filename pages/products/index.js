@@ -2,7 +2,11 @@ import React from 'react'
 import axios from 'axios'
 import { useQuery } from 'react-query'
 
+// Components
 import Layout from '../../components/shared/Layout.js'
+import AppTable from '../../components/shared/AppTable.js'
+import { Skeleton, Stack } from '@chakra-ui/react'
+
 import { isAuthenticated } from '../../lib/utils'
 
 async function getProducts() {
@@ -12,10 +16,56 @@ async function getProducts() {
 }
 
 export default function Products() {
-  const { data, isLoading } = useQuery('products', getProducts)
+  const {
+    data: { data: products },
+    isLoading,
+  } = useQuery('products', getProducts)
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'Name',
+        accessor: 'product_name',
+      },
+      {
+        Header: 'Price',
+        accessor: 'product_price',
+      },
+      {
+        Header: 'Stock Count',
+        accessor: 'stock_count',
+      },
+      {
+        Header: 'Category',
+        accessor: 'product_category',
+      },
+      {
+        Header: 'Product Code',
+        accessor: 'product_code',
+      },
+    ],
+    []
+  )
+
+  const tableData = React.useMemo(() => [...products], [products])
+
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-gray-900">Products</h1>
+      <h1 className="text-3xl font-semibold text-primary-default">Products</h1>
+      <h3 className="text-xl text-tertiary-default">
+        Manage your product catalogue
+      </h3>
+      <div className="my-6">
+        {isLoading ? (
+          <Stack>
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+          </Stack>
+        ) : (
+          <AppTable columns={columns} data={tableData} />
+        )}
+      </div>
     </div>
   )
 }
