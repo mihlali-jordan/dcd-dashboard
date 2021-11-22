@@ -15,6 +15,7 @@ const withProtect = handler => {
     }
 
     if (!token) {
+      console.log('a')
       return res.status(401).json({
         success: false,
         message: 'Please sign in to get access',
@@ -28,7 +29,7 @@ const withProtect = handler => {
       return handler(req, res)
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
-        const data = await refreshAuthToken(req, res, refreshToken)
+        const { data } = await refreshAuthToken(req, res, refreshToken)
         const decodedToken = jwt.decode(data.access_token)
         setHTTPHeaders(req, data.access_token, decodedToken)
 
@@ -39,6 +40,7 @@ const withProtect = handler => {
           message: 'Invalid auth token',
         })
       }
+
       return res.status(401).json({
         success: false,
         message: 'Please log in to get access',

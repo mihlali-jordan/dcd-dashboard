@@ -57,12 +57,17 @@ export default function AppTable({ columns, data }) {
 
   return (
     <React.Fragment>
-      <Table {...getTableProps()}>
-        <Thead>
+      <Table
+        bg="white"
+        variant="simple"
+        colorScheme="brand.primary"
+        {...getTableProps()}
+      >
+        <Thead bg="brand.primary.500">
           {headerGroups.map((headerGroup, idx) => (
             <Tr key={idx} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column, idx) => (
-                <Th key={idx} {...column.getHeaderProps()}>
+                <Th textColor="white" key={idx} {...column.getHeaderProps()}>
                   {column.render('Header')}
                 </Th>
               ))}

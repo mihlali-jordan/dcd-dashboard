@@ -5,7 +5,8 @@ import { useQuery } from 'react-query'
 // Components
 import Layout from '../../components/shared/Layout.js'
 import AppTable from '../../components/shared/AppTable.js'
-import { Skeleton, Stack } from '@chakra-ui/react'
+import { Button, Skeleton, Stack, useDisclosure } from '@chakra-ui/react'
+import AppDrawer from '../../components/shared/AppDrawer.js'
 
 import { isAuthenticated } from '../../lib/utils'
 
@@ -17,6 +18,7 @@ async function getProducts() {
 
 export default function Products() {
   const { data, isLoading } = useQuery('products', getProducts)
+  const { isOpen, onClose, onOpen } = useDisclosure()
 
   const columns = React.useMemo(
     () => [
@@ -54,10 +56,18 @@ export default function Products() {
 
   return (
     <div>
+      <AppDrawer onClose={onClose} isOpen={isOpen} header="Add a Product">
+        <h1>Hello</h1>
+      </AppDrawer>
       <h1 className="text-3xl font-semibold text-primary-default">Products</h1>
       <h3 className="text-xl text-tertiary-default">
         Manage your product catalogue
       </h3>
+      <div className="flex justify-end w-full">
+        <Button variant="solid" colorScheme="brand.secondary" onClick={onOpen}>
+          Add new product
+        </Button>
+      </div>
       <div className="my-6">
         {isLoading ? (
           <Stack>
