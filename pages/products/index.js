@@ -62,14 +62,15 @@ export default function Products({ userID }) {
     handleSubmit,
     formState: { errors },
     control,
+    reset,
   } = useForm({
     // resolver: yupResolver(productSchema),
-    defaultValues: {
-      stock_count: 44,
-      product_name: 'W11',
-      product_price: 102.0,
-      product_code: 'Lewis Hamilton',
-    },
+    // defaultValues: {
+    //   stock_count: '',
+    //   product_name: '',
+    //   product_price: '',
+    //   product_code: '',
+    // },
   })
   const [formId, setFormId] = React.useState('')
   const [productImages, setProductImages] = React.useState([])
@@ -86,6 +87,8 @@ export default function Products({ userID }) {
           title: 'Product added successfully',
           status: 'success',
         })
+        setProductImages([])
+        reset()
       },
       retry: 3,
     })
