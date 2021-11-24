@@ -12,7 +12,13 @@ import {
   Button,
 } from '@chakra-ui/react'
 
-export default function AppDrawer({ isOpen, onClose, children, header }) {
+export default function AppDrawer({
+  isOpen,
+  onClose,
+  children,
+  header,
+  formId,
+}) {
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="lg">
       <DrawerOverlay />
@@ -26,7 +32,9 @@ export default function AppDrawer({ isOpen, onClose, children, header }) {
           <Button variant="outline" mr={3} onClick={onClose}>
             Cancel
           </Button>
-          <Button colorScheme="brand.secondary">Save</Button>
+          <Button type="submit" form={formId} colorScheme="brand.secondary">
+            Save
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

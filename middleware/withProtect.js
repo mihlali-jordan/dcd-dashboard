@@ -29,9 +29,9 @@ const withProtect = handler => {
       return handler(req, res)
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
-        const { data } = await refreshAuthToken(req, res, refreshToken)
-        const decodedToken = jwt.decode(data.access_token)
-        setHTTPHeaders(req, data.access_token, decodedToken)
+        await refreshAuthToken(req, res, refreshToken)
+        // const decodedToken = jwt.decode(data.access_token)
+        // setHTTPHeaders(req, data.access_token, decodedToken)
 
         return handler(req, res)
       } else if (err.name === 'JsonWebTokenError') {

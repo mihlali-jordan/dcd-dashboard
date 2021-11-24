@@ -95,18 +95,20 @@ export default function AppTable({ columns, data }) {
         <Flex>
           <Tooltip label="First Page">
             <IconButton
+              bg="brand.tertiary.100"
               onClick={() => gotoPage(0)}
               isDisabled={!canPreviousPage}
-              icon={<ArrowLeftIcon h={3} w={3} />}
+              icon={<ArrowLeftIcon color="brand.tertiary.500" h={3} w={3} />}
               mr={4}
               aria-label="chevron double left icon"
             />
           </Tooltip>
           <Tooltip label="Previous Page">
             <IconButton
+              bg="brand.tertiary.100"
               onClick={previousPage}
               isDisabled={!canPreviousPage}
-              icon={<ChevronLeftIcon h={6} w={6} />}
+              icon={<ChevronLeftIcon color="brand.tertiary.500" h={6} w={6} />}
               aria-label="chevron left icon"
             />
           </Tooltip>
@@ -160,17 +162,19 @@ export default function AppTable({ columns, data }) {
         <Flex>
           <Tooltip label="Next Page">
             <IconButton
+              bg="brand.tertiary.100"
               onClick={nextPage}
               isDisabled={!canNextPage}
-              icon={<ChevronRightIcon h={6} w={6} />}
+              icon={<ChevronRightIcon color="brand.tertiary.500" h={6} w={6} />}
               aria-label="chevron-left icon"
             />
           </Tooltip>
           <Tooltip label="Last Page">
             <IconButton
+              bg="brand.tertiary.100"
               onClick={() => gotoPage(pageCount - 1)}
               isDisabled={!canNextPage}
-              icon={<ArrowRightIcon h={3} w={3} />}
+              icon={<ArrowRightIcon color="brand.tertiary.500" h={3} w={3} />}
               ml={4}
               aria-label="chevron double right icon"
             />

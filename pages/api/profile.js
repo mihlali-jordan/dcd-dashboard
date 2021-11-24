@@ -1,19 +1,30 @@
 import withProtect from '../../middleware/withProtect.js'
+import { Axios } from '../../lib/config/axios.js'
+import { httpMethodGuard } from '../../lib/utils'
 
 const handler = async (req, res) => {
-  const { method, user } = req
+  httpMethodGuard(req, res, 'GET')
 
-  if (method !== 'GET') {
-    return res.status(400).json({
+  try {
+    const { data, status } = await Axios({
+      method: 'GET',
+      url: '/Vendors',
+      params: {
+        id: `eq.${req.userId}`,
+        select: '*',
+      },
+    })
+
+    return res.status(status).json({
+      success: true,
+      data,
+    })
+  } catch (err) {
+    return res.status(err.response.status).json({
       success: false,
-      message: 'Only GET requests are allowed',
+      message: err.message,
     })
   }
-
-  return res.status(200).json({
-    success: true,
-    data: { ...user.user },
-  })
 }
 
 export default withProtect(handler)
