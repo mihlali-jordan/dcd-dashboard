@@ -1,8 +1,10 @@
 // Libraries
 import React from 'react'
 import axios from 'axios'
+import { createClient } from '@supabase/supabase-js'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import * as yup from 'yup'
+import { decode } from 'base64-arraybuffer'
 
 // Components
 import Layout from '../../components/shared/Layout.js'
@@ -11,17 +13,18 @@ import { Button, Input, Skeleton, Stack, useDisclosure } from '@chakra-ui/react'
 import AppDrawer from '../../components/shared/AppDrawer.js'
 import FormInput from '../../components/form/FormInput.js'
 import FormSelect from '../../components/form/FormSelect.js'
-import ImageUploading from 'react-images-uploading'
 import AppImageUpload from '../../components/shared/AppImageUpload.js'
-import Image from 'next/image'
+import { PuffLoader } from 'react-spinners'
 
 // Hooks
 import { useForm } from 'react-hook-form'
 import { useCustomToast } from '../../lib/hooks/useCustomToast.js'
+import { useTheme } from '@chakra-ui/react'
 
 // Utils
 import { isAuthenticated } from '../../lib/utils'
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup.umd.js'
+// import { yupResolver } from '@hookform/resolvers/yup/dist/yup.umd.js'
+import theme from '../../lib/config/theme.js'
 
 async function getProducts() {
   const { data } = await axios.get('/api/products/fetch')
@@ -47,7 +50,11 @@ const productSchema = yup.object({
   product_code: yup.string().required(),
 })
 
-export default function Products() {
+export default function Products({ userID }) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  )
   const toast = useCustomToast()
   const queryClient = useQueryClient()
   const { isOpen, onClose, onOpen } = useDisclosure()
@@ -56,7 +63,7 @@ export default function Products() {
     formState: { errors },
     control,
   } = useForm({
-    resolver: yupResolver(productSchema),
+    // resolver: yupResolver(productSchema),
     defaultValues: {
       stock_count: 44,
       product_name: 'W11',
@@ -66,6 +73,7 @@ export default function Products() {
   })
   const [formId, setFormId] = React.useState('')
   const [productImages, setProductImages] = React.useState([])
+  const [isGettingImageUrl, setIsGettingImageUrl] = React.useState(false)
 
   // Queries
   const { data, isLoading } = useQuery('products', getProducts)
@@ -73,6 +81,7 @@ export default function Products() {
     useMutation(product => addProduct(product), {
       onSuccess: () => {
         queryClient.invalidateQueries('products')
+        onClose()
         toast({
           title: 'Product added successfully',
           status: 'success',
@@ -82,13 +91,36 @@ export default function Products() {
     })
   const { data: user, isLoading: isLoadingUser } = useQuery('user', getVendor)
 
-  const handleAddProduct = values => {
-    // addProductMutation(values)
-    console.log(values)
+  const handleAddProduct = async values => {
+    setIsGettingImageUrl(true)
+    const image = productImages[0]
+    try {
+      const { data, error } = await supabase.storage
+        .from('images')
+        .upload(`products/${userID}/${image.file.name}`, image.file, {
+          cacheControl: '3600',
+          upsert: false,
+        })
+
+      if (error) throw error
+
+      // fetch image url
+      const { publicURL: imageUrl } = supabase.storage
+        .from('images')
+        .getPublicUrl(
+          `${data.Key.split('/')
+            .slice(1, data.Key.length - 1)
+            .join('/')}`
+        )
+      setIsGettingImageUrl(false)
+      addProductMutation({ ...values, image_url: imageUrl })
+    } catch (err) {
+      console.log(err)
+      setIsGettingImageUrl(false)
+    }
   }
 
   const handleImageChange = imageList => {
-    console.log(imageList)
     setProductImages(imageList)
   }
 
@@ -139,53 +171,69 @@ export default function Products() {
           className="space-y-3"
           onSubmit={handleSubmit(handleAddProduct)}
         >
-          <AppImageUpload value={productImages} onChange={handleImageChange} />
-          <div className="flex justify-between space-x-5">
-            <FormInput
-              label="Product Name"
-              name="product_name"
-              placeholder="Enter a name for your product"
-              control={control}
-              errors={errors}
-            />
-            <FormInput
-              label="Product Price"
-              name="product_price"
-              placeholder="E.g. 2300.00"
-              control={control}
-              errors={errors}
-              type="number"
-            />
-          </div>
-          <div className="flex justify-between space-x-5">
-            <FormInput
-              label="Product Code"
-              name="product_code"
-              placeholder="Enter a unique product code for the product"
-              control={control}
-              errors={errors}
-            />
-            <FormInput
-              label="Stock Count"
-              name="stock_count"
-              placeholder="E.g. 20"
-              control={control}
-              errors={errors}
-              type="number"
-            />
-          </div>
-          <div className="flex justify-between space-x-5">
-            {!isLoadingUser ? (
-              <FormSelect
-                errors={errors}
-                control={control}
-                name="product_category"
-                label="Product Category"
-                options={user.product_categories}
-                placeholder="Select a category"
+          {isLoadingMutation || isGettingImageUrl ? (
+            <div className="h-full flex flex-col space-y-3 items-center justify-center">
+              <PuffLoader
+                color={theme.colors.brand.primary['500']}
+                loading={isGettingImageUrl || isLoadingMutation}
+                size={150}
               />
-            ) : null}
-          </div>
+              <p>Adding your product. Do not navigate away.</p>
+            </div>
+          ) : (
+            <React.Fragment>
+              <AppImageUpload
+                value={productImages}
+                onChange={handleImageChange}
+              />
+              <div className="flex justify-between space-x-5">
+                <FormInput
+                  label="Product Name"
+                  name="product_name"
+                  placeholder="Enter a name for your product"
+                  control={control}
+                  errors={errors}
+                />
+                <FormInput
+                  label="Product Price"
+                  name="product_price"
+                  placeholder="E.g. 2300.00"
+                  control={control}
+                  errors={errors}
+                  type="number"
+                />
+              </div>
+              <div className="flex justify-between space-x-5">
+                <FormInput
+                  label="Product Code"
+                  name="product_code"
+                  placeholder="Enter a unique product code for the product"
+                  control={control}
+                  errors={errors}
+                />
+                <FormInput
+                  label="Stock Count"
+                  name="stock_count"
+                  placeholder="E.g. 20"
+                  control={control}
+                  errors={errors}
+                  type="number"
+                />
+              </div>
+              <div className="flex justify-between space-x-5">
+                {!isLoadingUser ? (
+                  <FormSelect
+                    errors={errors}
+                    control={control}
+                    name="product_category"
+                    label="Product Category"
+                    options={user.product_categories}
+                    placeholder="Select a category"
+                  />
+                ) : null}
+              </div>
+            </React.Fragment>
+          )}
         </form>
       </AppDrawer>
       <h1 className="text-3xl font-semibold text-primary-default">Products</h1>

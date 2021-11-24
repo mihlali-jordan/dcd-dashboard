@@ -10,7 +10,7 @@ import { Button } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 
 // Utilities
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup.umd.js'
+// import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
 import * as yup from 'yup'
 
 import logo from '../../public/hollard-logo-purple.png'
@@ -29,7 +29,7 @@ export default function SignIn() {
     formState: { errors },
     control,
   } = useForm({
-    resolver: yupResolver(loginSchema),
+    // resolver: yupResolver(loginSchema),
     defaultValues: {
       email: 'ukhuni@conciergedeskonline.com',
       password: 'abc123abc',
