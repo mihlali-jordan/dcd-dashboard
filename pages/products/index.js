@@ -7,7 +7,7 @@ import * as yup from 'yup'
 // Components
 import Layout from '../../components/shared/Layout.js'
 import AppTable from '../../components/shared/AppTable.js'
-import { Button, Skeleton, Stack, useDisclosure } from '@chakra-ui/react'
+import { Button, Input, Skeleton, Stack, useDisclosure } from '@chakra-ui/react'
 import AppDrawer from '../../components/shared/AppDrawer.js'
 import FormInput from '../../components/form/FormInput.js'
 import FormSelect from '../../components/form/FormSelect.js'
@@ -42,6 +42,7 @@ const productSchema = yup.object({
   product_name: yup.string().required(),
   product_price: yup.number().required(),
   product_code: yup.string().required(),
+  product_image: yup.string().required(),
 })
 
 export default function Products() {
@@ -175,6 +176,15 @@ export default function Products() {
                 placeholder="Select a category"
               />
             ) : null}
+            <FormInput
+              label="Product Image"
+              name="product_image"
+              placeholder="E.g. 20"
+              control={control}
+              errors={errors}
+              type="file"
+              variant="unstyled"
+            />
           </div>
         </form>
       </AppDrawer>
