@@ -11,6 +11,9 @@ import { Button, Input, Skeleton, Stack, useDisclosure } from '@chakra-ui/react'
 import AppDrawer from '../../components/shared/AppDrawer.js'
 import FormInput from '../../components/form/FormInput.js'
 import FormSelect from '../../components/form/FormSelect.js'
+import ImageUploading from 'react-images-uploading'
+import AppImageUpload from '../../components/shared/AppImageUpload.js'
+import Image from 'next/image'
 
 // Hooks
 import { useForm } from 'react-hook-form'
@@ -42,7 +45,6 @@ const productSchema = yup.object({
   product_name: yup.string().required(),
   product_price: yup.number().required(),
   product_code: yup.string().required(),
-  product_image: yup.string().required(),
 })
 
 export default function Products() {
@@ -63,6 +65,7 @@ export default function Products() {
     },
   })
   const [formId, setFormId] = React.useState('')
+  const [productImages, setProductImages] = React.useState([])
 
   // Queries
   const { data, isLoading } = useQuery('products', getProducts)
@@ -82,6 +85,11 @@ export default function Products() {
   const handleAddProduct = values => {
     // addProductMutation(values)
     console.log(values)
+  }
+
+  const handleImageChange = imageList => {
+    console.log(imageList)
+    setProductImages(imageList)
   }
 
   const columns = React.useMemo(
@@ -131,6 +139,7 @@ export default function Products() {
           className="space-y-3"
           onSubmit={handleSubmit(handleAddProduct)}
         >
+          <AppImageUpload value={productImages} onChange={handleImageChange} />
           <div className="flex justify-between space-x-5">
             <FormInput
               label="Product Name"
@@ -176,15 +185,6 @@ export default function Products() {
                 placeholder="Select a category"
               />
             ) : null}
-            <FormInput
-              label="Product Image"
-              name="product_image"
-              placeholder="E.g. 20"
-              control={control}
-              errors={errors}
-              type="file"
-              variant="unstyled"
-            />
           </div>
         </form>
       </AppDrawer>
